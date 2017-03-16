@@ -1,4 +1,4 @@
-baseurl = "https://gopherdata.io"
+baseurl = "http://gopherdata.io"
 title = "GopherData"
 copyright = "&copy; 2017 GopherData"
 theme = "academic"
