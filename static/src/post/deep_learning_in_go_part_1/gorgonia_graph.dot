@@ -1,0 +1,74 @@
+digraph fullGraph {
+	nodesep=1;
+	rankdir=TB;
+	ranksep="1.5 equally";
+	Node_0xc420146300:anchor:s->Node_0xc420146000:anchor:n[ labelfloat=false, taillabel=" 0 " ];
+	Node_0xc420146300:anchor:s->Node_0xc420146240:anchor:n[ labelfloat=false, taillabel=" 1 " ];
+	outsideRoot->insideInputs[ constraint=false, style=invis, weight=999 ];
+	outsideExprG->insideExprG[ constraint=false, style=invis, weight=999 ];
+	outsideRoot->outsideExprG[ constraint=false, style=invis, weight=999 ];
+	insideInputs->insideExprG[ constraint=false, style=invis, weight=999 ];
+	subgraph cluster_expressionGraph {
+	label=expressionGraph;
+	Node_0xc420146300 [ fontname=monospace, label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" PORT="anchor"  COLOR="#FF0000;" >
+
+<TR><TD>2</TD><TD>+ false(%a8d96c31, %82d6f1c8) :: int</TD></TR>
+<TR><TD>Op</TD><TD>+ false :: a → a → a</TD></TR>
+<TR><TD COLSPAN="2">()</TD></TR>
+<TR><TD COLSPAN="2">-1</TD></TR>
+
+<TR><TD>Value</TD><TD>int 002</TD></TR>
+
+
+</TABLE>
+>, shape=none ];
+	insideExprG [ style=invis ];
+
+}
+;
+	subgraph inputConsts {
+	rank=max;
+	subgraph cluster_inputs {
+	label=inputs;
+	Node_0xc420146000 [ fontname=monospace, label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" PORT="anchor"  COLOR="#00FF00;" BGCOLOR="lightyellow">
+
+<TR><TD>0</TD><TD>x :: int</TD></TR>
+
+<TR><TD COLSPAN="2">()</TD></TR>
+<TR><TD COLSPAN="2">-1</TD></TR>
+
+<TR><TD>Value</TD><TD>int 001</TD></TR>
+
+
+</TABLE>
+>, shape=none ];
+	Node_0xc420146240 [ fontname=monospace, label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" PORT="anchor"  COLOR="#00FF00;" BGCOLOR="lightyellow">
+
+<TR><TD>1</TD><TD>y :: int</TD></TR>
+
+<TR><TD COLSPAN="2">()</TD></TR>
+<TR><TD COLSPAN="2">-1</TD></TR>
+
+<TR><TD>Value</TD><TD>int 001</TD></TR>
+
+
+</TABLE>
+>, shape=none ];
+	insideInputs [ style=invis ];
+
+}
+;
+
+}
+;
+	subgraph outsides {
+	outsideExprG [ style=invis ];
+	outsideRoot [ style=invis ];
+
+}
+;
+
+}
