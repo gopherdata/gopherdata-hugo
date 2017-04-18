@@ -210,7 +210,7 @@ This corresponds to this part of the cleaned up graph (with unnecessary nodes re
 </div>
 
 
-The graph is traversed in a depth-first manner, starting from the top. The values of the program flow from bottom to up. When the program runs, it starts right at the top. The node will not be resolved until the dependent nodes have been evaluated. The arrows point to what each node depends on. So for example, the value of the `*ast.BinaryExpr` node is dependent on the values of `*ast.BasicLit (Kind: INT)`. Since we know both values are `1`, and we know what `+` does, we know that the value at the node `*ast.BinaryExpr` is `2`.
+The graph is traversed in a depth-first manner, starting from the top. The values of the program flow from bottom to top. When the program runs, it starts right at the top. The node will not be resolved until the dependent nodes have been evaluated. The arrows point to what each node depends on. So for example, the value of the `*ast.BinaryExpr` node is dependent on the values of `*ast.BasicLit (Kind: INT)`. Since we know both values are `1`, and we know what `+` does, we know that the value at the node `*ast.BinaryExpr` is `2`.
 
 ## Equations As Graphs ##
 
