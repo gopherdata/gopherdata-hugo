@@ -1,0 +1,33 @@
+digraph {
+	mainFn[label="func main()"];
+	mainBody[label="*ast.BlocStmt"];
+	bodyList[label="[]ast.Stmt"];
+	list0[label="*ast.ExprStmt"];
+	call[label="*ast.CallExpr"];
+	fn[label="*ast.SelectorExpr"];
+	fnPkg[label="*ast.Ident (Name: fmt)"];
+	fnFn[label="*ast.Ident (Name: Printf)"];
+	args[label="[]ast.Expr"];
+	args0[label="*ast.BasicLit (Kind: STRING) (Value: %v)"];
+	args1[label="*ast.BinaryExpr (Op: +)"];
+	lhs[label="*ast.BasicLit (Kind: INT) (Value: 1)"];
+	rhs[label="*ast.BasicLit (Kind: INT) (Value: 1)"];
+
+
+	mainFn->mainBody;
+	mainBody -> bodyList;
+	bodyList-> list0;
+	list0->call;
+
+	call->fn;
+	fn->fnPkg;
+	fn->fnFn;
+
+	call->args;
+	args->args0;
+	args->args1
+
+	args1->lhs;
+	args1->rhs;
+	
+}

@@ -1,0 +1,8 @@
+digraph {
+	args1[label="*ast.BinaryExpr (Op: +)"];
+	lhs[label="*ast.BasicLit (Kind: INT) (Value: 1)"];
+	rhs[label="*ast.BasicLit (Kind: INT) (Value: 1)"];
+
+	args1->lhs;
+	args1->rhs;
+}
