@@ -222,24 +222,25 @@ So instead of the program above, we'd create something like this:
 
 ```go
 func main() {
-	// create a graph
+	// Create a graph.
 	g := G.NewGraph()                         
 	
-	// create a node called "x" with the value 1
+	// Create a node called "x" with the value 1.
 	x := G.NodeFromAny(g, 1, G.WithName("x")) 
 	
-	// create a node called "y" with the value 1
+	// Create a node called "y" with the value 1.
 	y := G.NodeFromAny(g, 1, G.WithName("y")) 
 	
 	// z := x + y
 	z := G.Must(G.Add(x, y))                  
 
-	// create a VM to execute the graph
+	// Create a VM to execute the graph.
 	vm := G.NewTapeMachine(g) 
+
 	// Run the VM. Errors are not checked.
 	vm.RunAll()               
 
-	// print the value of z
+	// Print the value of z.
 	fmt.Printf("%v", z.Value()) 
 }
 ```
