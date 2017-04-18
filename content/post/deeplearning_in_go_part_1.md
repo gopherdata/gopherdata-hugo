@@ -2,21 +2,21 @@
 title = "Deep Learning from Scratch in Go - Part 1: Equations Are Graphs"
 subtitle = ""
 date = "2017-04-19T08:43:45+10:00"
-latex = true
+math = true
 draft = true
 
 +++
 
 (Author: Chewxy, @chewxy on [Twitter](https://twitter.com/chewxy) and Gophers Slack)
 
-Welcome to the first part of many about writing deep learning algorithms in Go. The goal of this series is to go from having no knowledge at all to implementing a latest paper. 
+Welcome to the first part of many about writing deep learning algorithms in Go. The goal of this series is to go from having no knowledge at all to implementing some of the latest developments in this area. 
 
-Deep learning is not new. In fact the idea of deep learning was spawned in the early 1980s. What's changed since then is our computers - they have gotten much much more powerful.  In this blog post we'll start with something familiar, and edge towards building a conceptual model of deep learning. We won't define deep learning for the first few posts, so don't worry so much about the term.
+[Deep learning](https://en.wikipedia.org/wiki/Deep_learning) is not new. In fact the idea of deep learning was spawned in the early 1980s. What's changed since then is our computers - they have gotten much much more powerful.  In this blog post we'll start with something familiar, and edge towards building a conceptual model of deep learning. We won't define deep learning for the first few posts, so don't worry so much about the term.
 
 There are a few terms of clarification to be made before we begin proper. In this series, the word "graph" refers to the concept of graph as used in [graph theory](https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)). For the other kind of "graph" which is usually used for data visualization, I'll use the term "chart".
 
 ## Computation ##
-I'm going to start by making a claim: all programs can be represented as graphs. This claim is not new, of course. Nor is it bold or revolutionary. It's the fundamental theory that computer scientists have been working on ever since the birth of the field of computation. But you may have missed it. And so to rehash, the logic goes as such:
+I'm going to start by making a claim: all programs can be represented as graphs. This claim is not new, of course. Nor is it bold or revolutionary. It's the fundamental theory that computer scientists have been working on ever since the birth of the field of computation. But you may have missed it. If you have missed it, the logic goes as such:
 
 1. All modern computer programs run on what essentially is a [Turing Machine](https://en.wikipedia.org/wiki/Turing_machine).
 2. All Turing machines are equivalent to untyped lambda calculus (this is commonly known as the [Church-Turing thesis](https://en.wikipedia.org/wiki/Church_Turing_thesis))
@@ -31,7 +31,7 @@ func main() {
 }
 ``` 
 
-This generates an [abstract syntax tree](https://en.wikipedia.org/wiki/Abstract_syntax_tree) like so:
+This generates an [abstract syntax tree](https://en.wikipedia.org/wiki/Abstract_syntax_tree) like so (the AST was generated with a library built on top of [goast-viewer](https://github.com/yuroyoro/goast-viewer)):
 
 
 <div style="margin-left:auto; margin-right:auto;">
@@ -169,7 +169,7 @@ This generates an [abstract syntax tree](https://en.wikipedia.org/wiki/Abstract_
 </svg>
 </div>
 
-By this, we can also say that any equation that can be represented as a computer program can be represented as a graph. In particular, let's zoom in `1+1` part:
+By this, we can also say that any equation that can be represented as a computer program, and a computer program can be represented as a graph. In particular, let's zoom in `1+1` part:
 
 This corresponds to this part of the cleaned up graph (with unnecessary nodes removed):
 
@@ -210,11 +210,11 @@ This corresponds to this part of the cleaned up graph (with unnecessary nodes re
 </div>
 
 
-The values of the program flow from bottom to up. When the program runs, it starts right at the top. The arrows point to what each node depends on. So for example, the value of the `*ast.BinaryExpr` node is dependent on the values of `*ast.BasicLit (Kind: INT)`. Since we know both values are `1`, and we know what `+` does, we know that the value at the node `*ast.BinaryExpr` is `2`.
+The graph is traversed in a depth-first manner, starting from the top. The values of the program flow from bottom to up. When the program runs, it starts right at the top. The node will not be resolved until the dependent nodes have been evaluated. The arrows point to what each node depends on. So for example, the value of the `*ast.BinaryExpr` node is dependent on the values of `*ast.BasicLit (Kind: INT)`. Since we know both values are `1`, and we know what `+` does, we know that the value at the node `*ast.BinaryExpr` is `2`.
 
 ## Equations As Graphs ##
 
-Why did you just sit through the above to know something you probably already know? Well, it's because deep learning is really in its core, just a bunch of mathematical equations. Wait, don't go yet! It's not that scary. I am personally of the opinion that one can't really do deep learning (or any machine learning, really) without understanding the mathematics behind it. And in my experience there hasn't been a better way to learn it than visually, if only to internalize the concepts.
+Now why did we spend all that time show 1+1 in graph form? Well, it's because deep learning is really in its core, just a bunch of mathematical equations. Wait, don't go yet! It's not that scary. I am personally of the opinion that one can't really do deep learning (or any machine learning, really) without understanding the mathematics behind it. And in my experience there hasn't been a better way to learn it than visually, if only to internalize the concepts.
 
 Most deep learning libraries like [Tensorflow](https://tensorflow.org), [Theano](https://deeplearning.org/theano), or even my own for Go - [Gorgonia](https://github.com/chewxy/gorgonia), rely on this core concept that equations are representable by graphs. More importantly, these libraries expose the equation graphs as objects that can be manipulated by the programmer.
 
@@ -222,15 +222,25 @@ So instead of the program above, we'd create something like this:
 
 ```go
 func main() {
-	g := G.NewGraph()                         // create a graph
-	x := G.NodeFromAny(g, 1, G.WithName("x")) // create a node called "x" with the value 1
-	y := G.NodeFromAny(g, 1, G.WithName("y")) // create a node called "y" with the value 1
-	z := G.Must(G.Add(x, y))                  // z := x + y
+	// create a graph
+	g := G.NewGraph()                         
+	
+	// create a node called "x" with the value 1
+	x := G.NodeFromAny(g, 1, G.WithName("x")) 
+	
+	// create a node called "y" with the value 1
+	y := G.NodeFromAny(g, 1, G.WithName("y")) 
+	
+	// z := x + y
+	z := G.Must(G.Add(x, y))                  
 
-	vm := G.NewTapeMachine(g) // create a VM to execute the graph
-	vm.RunAll()               // Run the VM
+	// create a VM to execute the graph
+	vm := G.NewTapeMachine(g) 
+	// Run the VM. Errors are not checked.
+	vm.RunAll()               
 
-	fmt.Printf("%v", z.Value()) // print the value of z
+	// print the value of z
+	fmt.Printf("%v", z.Value()) 
 }
 ```
 
@@ -238,7 +248,7 @@ The equation graph looks like this:
 
 <div style="margin-left:auto; margin-right:auto;">
 <svg style="width:100%; height:auto;"
- viewBox="0.00 0.00 1113.30 360.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+ viewBox="0.00 0.00 715.00 360.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 356)">
 <title>fullGraph</title>
 <polygon fill="white" stroke="none" points="-4,4 -4,-356 1109.3,-356 1109.3,4 -4,4"/>
@@ -334,7 +344,7 @@ I would however, posit at least three advantages of having a graph object. All o
 
 ### Numerical Stability ###
 
-Consider the equation $latex y = log(1 + x)$. This equation is not [numerically stable](https://en.wikipedia.org/wiki/Numerical_stability) - for very small values of `x`, the answer will most likely be wrong. This is because of the way `float64` is designed - a `float64` does not have enough bits to be able to tell apart `1` and `1 + 10e-16`. In fact, the correct way to do $latex y = log(1 + x)$ is to use the built in library function `math.Log1p`. It can be shown in this simple program:
+Consider the equation $y = log(1 + x)$. This equation is not [numerically stable](https://en.wikipedia.org/wiki/Numerical_stability) - for very small values of `x`, the answer will most likely be wrong. This is because of the way `float64` is designed - a `float64` does not have enough bits to be able to tell apart `1` and `1 + 10e-16`. In fact, the correct way to do $latex y = log(1 + x)$ is to use the built in library function `math.Log1p`. It can be shown in this simple program:
 
 ```go
 func main() {
@@ -371,11 +381,11 @@ This is the same program compiled down to assembly:
 
 In particular, pay attention to the second last line: `MOVQ	$2, "".~r0+8(FP)`. The function has been optimized in such a way that `2` is returned. No addition operation will be performed at run time. This is because the compiler knows, *at compile time*, that 1 + 1 = 2. By replacing the expression with a constant, the compiler is saving on computation cycles at run time. If you're interested in building compilers, this is known as [constant folding](https://en.wikipedia.org/wiki/Constant_folding).
 
-So, we've established that compilers are smart enough to do optimizations. But the Go compiler (and in fact most non-machine-learning specific compilers) aren't smart enough to handle values that are used for machine learning. For machine learning, we frequently use array-based values, like a slice of `float64`s, or a matrix of `float32`s. 
+So, we've established that compilers are smart enough to do optimizations. But the Go compiler (and in fact most non-machine-learning specific compilers) isn't smart enough to handle values that are used for machine learning. For machine learning, we frequently use array-based values, like a slice of `float64`s, or a matrix of `float32`s. 
 
 Imagine if you will, if you're not doing `1 + 1`. Instead you're doing `[]int{1, 1, 1} + []int{1,1,1}`. The compiler wouldn't be able to optimize this and just replace it with `[]int{2, 2, 2}`. But building a graph object that can be optimized allows users to do just that. Gorgonia currently doesn't do constant folding yet (earlier versions had constant folding but it is quite difficult to get right), but it comes with other forms of graph optimizations like [common expression elimination](https://en.wikipedia.org/wiki/Common_subexpression_elimination), some amount of variable elimination and some minimal form of tree shaking. Other more mature libraries like TensorFlow or Theano comes with very many optimization algorithms for their graphs.
 
-Again, one could argue that this could be done by hand, and coding it into the program would be more than doable. But really is this where you'd rather spend your time and effort? Or would you rather be creating the coolest new deep learning stuff?
+Again, one could argue that this could be done by hand, and coding it into the program would be more than doable. But is this really where you'd rather spend your time and effort? Or would you rather be creating the coolest new deep learning stuff?
 
 ### Backpropagation ###
 
@@ -388,6 +398,6 @@ In a far future post, I shall also touch on the capacity to generate better code
 
 If you're working on a truly homoiconic language such as lisp or Julia, you probably wouldn't need a graph object. If you could have access to the program's internal data structures and they're modifiable on the fly at run time, you would be able to augment plenty of the operations on the fly (yes, you can do the same for Go, but why would you?). This would make backpropagation algorithms a lot simpler to perform at runtime. Unfortunately this isn't the case. Which is why we'd have to build up extra data structures for deep learning. 
 
-Do note that this isn't a knock on Go or Python or Lua. All languages has its strengths and weaknesses. You may even be wondering - why do deep learning related work in Go while all the mature libraries are in Python and/or Lua? Well, one of the major reasons I developed Gorgonia was the ability to deploy everything neatly into one single binary. Doing that with Python or Lua would take an immense amount of effort. By contrast, deploying Go programs are a breeze. 
+Do note that this isn't a knock on Go or Python or Lua. All of these languages have their strengths and weaknesses. But why do deep learning related work in Go when there are more mature libraries in Python or Lua? Well, one of the major reasons I developed Gorgonia was the ability to deploy everything neatly into one single binary. Doing that with Python or Lua would take an immense amount of effort. By contrast, deploying Go programs are a breeze. 
 
 I believe that Go for data science is an amazing idea. It is typesafe (enough for me), and it's compiled down to binary. Go allows for better mechanical sympathy, which I believe is key to having faster and better AI out there. Afterall, we are ALL bound by our hardware. I just wish there were better higher level data structures for me to express my ideas. There weren't, so I built them. And I hope you use them.
