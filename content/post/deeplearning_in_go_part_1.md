@@ -3,7 +3,7 @@ title = "Deep Learning from Scratch in Go - Part 1: Equations Are Graphs"
 subtitle = ""
 date = "2017-04-19T08:43:45+10:00"
 math = true
-draft = true
+draft = false
 
 +++
 
