@@ -345,7 +345,7 @@ I would however, posit at least three advantages of having a graph object. All o
 
 ### Numerical Stability ###
 
-Consider the equation $y = log(1 + x)$. This equation is not [numerically stable](https://en.wikipedia.org/wiki/Numerical_stability) - for very small values of `x`, the answer will most likely be wrong. This is because of the way `float64` is designed - a `float64` does not have enough bits to be able to tell apart `1` and `1 + 10e-16`. In fact, the correct way to do $latex y = log(1 + x)$ is to use the built in library function `math.Log1p`. It can be shown in this simple program:
+Consider the equation $y = log(1 + x)$. This equation is not [numerically stable](https://en.wikipedia.org/wiki/Numerical_stability) - for very small values of `x`, the answer will most likely be wrong. This is because of the way `float64` is designed - a `float64` does not have enough bits to be able to tell apart `1` and `1 + 10e-16`. In fact, the correct way to do $ y = log(1 + x)$ is to use the built in library function `math.Log1p`. It can be shown in this simple program:
 
 ```go
 func main() {
