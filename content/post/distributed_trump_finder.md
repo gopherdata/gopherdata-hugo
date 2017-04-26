@@ -1,6 +1,6 @@
 +++
 date = "2017-04-26T12:00:00"
-draft = true
+draft = false
 tags = ["academic", "hugo"]
 title = "Building a distributed Trump finder"
 math = false
