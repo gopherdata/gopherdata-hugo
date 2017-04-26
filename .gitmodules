@@ -2,3 +2,6 @@
 	path = public
 	url = https://github.com/gopherdata/gopherdata.github.io.git
 	branch = master
+[submodule "themes/academic"]
+	path = themes/academic
+	url = https://github.com/gcushen/hugo-academic.git
