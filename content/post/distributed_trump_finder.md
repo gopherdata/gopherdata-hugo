@@ -195,7 +195,7 @@ As you can see, we now have two "tagged" versions of the images in the output `t
 
 ![alt text](https://raw.githubusercontent.com/dwhitena/pach-machine-box/master/tagged_images1.jpg)
 
-**Teaching a new faces, updating the output**:
+**Teaching a new face, updating the output**:
 
 Our pipeline isn't restricted to Trump or any one face.  Actually, we can teach facebox another face by updating our `training`.  Moreover, becauce Pachyderm verions your data and know what data is new, it can automatically update all our results once facebox learns the new face:
 
