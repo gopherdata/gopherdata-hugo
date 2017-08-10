@@ -4,7 +4,7 @@ draft = false
 tags = ["academic", "hugo"]
 title = "Building a distributed Trump finder"
 math = false
-summary = """A step-by-step guide to building a distributed facial recognition system with Pachyderm and Machine Box. 
+summary = """A step-by-step guide to building a distributed facial recognition system with Pachyderm and Machine Box.
 """
 
 [header]
@@ -57,7 +57,7 @@ trump1.jpg          file                78.98 KiB
 trump2.jpg          file                334.5 KiB           
 trump3.jpg          file                11.63 KiB           
 trump4.jpg          file                27.45 KiB           
-trump5.jpg          file                33.6 KiB 
+trump5.jpg          file                33.6 KiB
 ➔ cd ../../labels/
 ➔ ls
 clinton.jpg  trump.jpg
@@ -83,16 +83,16 @@ We are using a little bash magic here to perform these operations.  However, it 
 
 ```sh
 create-MB-pipeline.sh  identify.json  tag.json  train.json
-➔ ./create-MB-pipeline.sh train.json 
+➔ ./create-MB-pipeline.sh train.json
 ➔ pachctl list-pipeline
 NAME                INPUT               OUTPUT              STATE               
 model               training            model/master        running    
 ➔ pachctl list-job
 ID                                   OUTPUT COMMIT STARTED       DURATION RESTART PROGRESS STATE            
-3425a7a0-543e-4e2a-a244-a3982c527248 model/-       9 seconds ago -        1       0 / 1    running 
+3425a7a0-543e-4e2a-a244-a3982c527248 model/-       9 seconds ago -        1       0 / 1    running
 ➔ pachctl list-job
 ID                                   OUTPUT COMMIT                          STARTED       DURATION  RESTART PROGRESS STATE            
-3425a7a0-543e-4e2a-a244-a3982c527248 model/1b9c158e33394056a18041a4a86cb54a 5 minutes ago 5 minutes 1       1 / 1    success 
+3425a7a0-543e-4e2a-a244-a3982c527248 model/1b9c158e33394056a18041a4a86cb54a 5 minutes ago 5 minutes 1       1 / 1    success
 ➔ pachctl list-repo
 NAME                CREATED             SIZE                
 model               5 minutes ago       4.118 KiB           
@@ -111,15 +111,15 @@ As you can see the output of this pipeline is a `.facebox` file that contained t
 We then launch another Pachyderm pipeline, based on an [identify.json](https://github.com/dwhitena/pach-machine-box/blob/master/pipelines/identify.json) pipeline specification, to identify faces within the `unidentified` images.  This pipeline will take the persisted state of our model in `model` along with the `unidentified` images as input.  It will also execute cURL commands to interact with facebox, and it will output indications of identified faces to JSON files, one per `unidentified` image.
 
 ```sh
-➔ ./create-MB-pipeline.sh identify.json 
+➔ ./create-MB-pipeline.sh identify.json
 ➔ pachctl list-job
 ID                                   OUTPUT COMMIT                          STARTED       DURATION  RESTART PROGRESS STATE            
-281d4393-05c8-44bf-b5de-231cea0fc022 identify/-                             6 seconds ago -         0       0 / 2    running 
-3425a7a0-543e-4e2a-a244-a3982c527248 model/1b9c158e33394056a18041a4a86cb54a 8 minutes ago 5 minutes 1       1 / 1    success 
+281d4393-05c8-44bf-b5de-231cea0fc022 identify/-                             6 seconds ago -         0       0 / 2    running
+3425a7a0-543e-4e2a-a244-a3982c527248 model/1b9c158e33394056a18041a4a86cb54a 8 minutes ago 5 minutes 1       1 / 1    success
 ➔ pachctl list-job
 ID                                   OUTPUT COMMIT                             STARTED            DURATION   RESTART PROGRESS STATE            
-281d4393-05c8-44bf-b5de-231cea0fc022 identify/287fc78a4cdf42d89142d46fb5f689d9 About a minute ago 53 seconds 0       2 / 2    success 
-3425a7a0-543e-4e2a-a244-a3982c527248 model/1b9c158e33394056a18041a4a86cb54a    9 minutes ago      5 minutes  1       1 / 1    success 
+281d4393-05c8-44bf-b5de-231cea0fc022 identify/287fc78a4cdf42d89142d46fb5f689d9 About a minute ago 53 seconds 0       2 / 2    success
+3425a7a0-543e-4e2a-a244-a3982c527248 model/1b9c158e33394056a18041a4a86cb54a    9 minutes ago      5 minutes  1       1 / 1    success
 ➔ pachctl list-repo
 NAME                CREATED              SIZE                
 identify            About a minute ago   1.932 KiB           
@@ -166,17 +166,17 @@ We are most of the way there! We have identified Trump in the `unidentified` ima
 To do this, we can use a [simple Go program](https://github.com/dwhitena/pach-machine-box/blob/master/tagimage/main.go) to draw the label image on the `unidentified` image at the appropriate location.  This part of the pipeline is specified by a [tag.json](https://github.com/dwhitena/pach-machine-box/blob/master/pipelines/tag.json) pipeline specification, and can be created as follows:
 
 ```sh
-➔ pachctl create-pipeline -f tag.json 
+➔ pachctl create-pipeline -f tag.json
 ➔ pachctl list-job
 ID                                   OUTPUT COMMIT                             STARTED        DURATION   RESTART PROGRESS STATE            
-cd284a28-6c97-4236-9f6d-717346c60f24 tag/-                                     2 seconds ago  -          0       0 / 2    running 
-281d4393-05c8-44bf-b5de-231cea0fc022 identify/287fc78a4cdf42d89142d46fb5f689d9 5 minutes ago  53 seconds 0       2 / 2    success 
-3425a7a0-543e-4e2a-a244-a3982c527248 model/1b9c158e33394056a18041a4a86cb54a    13 minutes ago 5 minutes  1       1 / 1    success 
+cd284a28-6c97-4236-9f6d-717346c60f24 tag/-                                     2 seconds ago  -          0       0 / 2    running
+281d4393-05c8-44bf-b5de-231cea0fc022 identify/287fc78a4cdf42d89142d46fb5f689d9 5 minutes ago  53 seconds 0       2 / 2    success
+3425a7a0-543e-4e2a-a244-a3982c527248 model/1b9c158e33394056a18041a4a86cb54a    13 minutes ago 5 minutes  1       1 / 1    success
 ➔ pachctl list-job
 ID                                   OUTPUT COMMIT                             STARTED        DURATION   RESTART PROGRESS STATE            
-cd284a28-6c97-4236-9f6d-717346c60f24 tag/ae747e8032704b6cae6ae7bba064c3c3      25 seconds ago 11 seconds 0       2 / 2    success 
-281d4393-05c8-44bf-b5de-231cea0fc022 identify/287fc78a4cdf42d89142d46fb5f689d9 5 minutes ago  53 seconds 0       2 / 2    success 
-3425a7a0-543e-4e2a-a244-a3982c527248 model/1b9c158e33394056a18041a4a86cb54a    14 minutes ago 5 minutes  1       1 / 1    success 
+cd284a28-6c97-4236-9f6d-717346c60f24 tag/ae747e8032704b6cae6ae7bba064c3c3      25 seconds ago 11 seconds 0       2 / 2    success
+281d4393-05c8-44bf-b5de-231cea0fc022 identify/287fc78a4cdf42d89142d46fb5f689d9 5 minutes ago  53 seconds 0       2 / 2    success
+3425a7a0-543e-4e2a-a244-a3982c527248 model/1b9c158e33394056a18041a4a86cb54a    14 minutes ago 5 minutes  1       1 / 1    success
 ➔ pachctl list-repo
 NAME                CREATED             SIZE                
 tag                 30 seconds ago      591.3 KiB           
@@ -195,9 +195,9 @@ As you can see, we now have two "tagged" versions of the images in the output `t
 
 ![alt text](https://raw.githubusercontent.com/dwhitena/pach-machine-box/master/tagged_images1.jpg)
 
-**Teaching a new faces, updating the output**:
+**Teaching a new face, updating the output**:
 
-Our pipeline isn't restricted to Trump or any one face.  Actually, we can teach facebox another face by updating our `training`.  Moreover, becauce Pachyderm verions your data and know what data is new, it can automatically update all our results once facebox learns the new face:
+Our pipeline isn't restricted to Trump or any one face.  Actually, we can teach facebox another face by updating our `training`.  Moreover, because Pachyderm versions your data and knows what data is new, it can automatically update all our results once facebox learns the new face:
 
 ```sh
 ➔ cd ../data/train/faces2/
@@ -206,25 +206,25 @@ clinton1.jpg  clinton2.jpg  clinton3.jpg  clinton4.jpg
 ➔ pachctl put-file training master -c -r -f .
 ➔ pachctl list-job
 ID                                   OUTPUT COMMIT                             STARTED        DURATION   RESTART PROGRESS STATE            
-56e24ac0-0430-4fa4-aa8b-08de5c1884db model/-                                   4 seconds ago  -          0       0 / 1    running 
-cd284a28-6c97-4236-9f6d-717346c60f24 tag/ae747e8032704b6cae6ae7bba064c3c3      6 minutes ago  11 seconds 0       2 / 2    success 
-281d4393-05c8-44bf-b5de-231cea0fc022 identify/287fc78a4cdf42d89142d46fb5f689d9 11 minutes ago 53 seconds 0       2 / 2    success 
-3425a7a0-543e-4e2a-a244-a3982c527248 model/1b9c158e33394056a18041a4a86cb54a    20 minutes ago 5 minutes  1       1 / 1    success 
+56e24ac0-0430-4fa4-aa8b-08de5c1884db model/-                                   4 seconds ago  -          0       0 / 1    running
+cd284a28-6c97-4236-9f6d-717346c60f24 tag/ae747e8032704b6cae6ae7bba064c3c3      6 minutes ago  11 seconds 0       2 / 2    success
+281d4393-05c8-44bf-b5de-231cea0fc022 identify/287fc78a4cdf42d89142d46fb5f689d9 11 minutes ago 53 seconds 0       2 / 2    success
+3425a7a0-543e-4e2a-a244-a3982c527248 model/1b9c158e33394056a18041a4a86cb54a    20 minutes ago 5 minutes  1       1 / 1    success
 ➔ pachctl list-job
 ID                                   OUTPUT COMMIT                             STARTED            DURATION   RESTART PROGRESS STATE            
-6aa6c995-58ce-445d-999a-eb0e0690b041 tag/7cbd2584d4f0472abbca0d9e015b9829      5 seconds ago      1 seconds  0       2 / 2    success 
-8a7961b7-1085-404a-b0ee-66034fae7212 identify/1bc94ec558e44e0cb45ed5ab7d9f9674 59 seconds ago     54 seconds 0       2 / 2    success 
-56e24ac0-0430-4fa4-aa8b-08de5c1884db model/002f16b63a4345a4bc6bdf5510c9faac    About a minute ago 19 seconds 0       1 / 1    success 
-cd284a28-6c97-4236-9f6d-717346c60f24 tag/ae747e8032704b6cae6ae7bba064c3c3      8 minutes ago      11 seconds 0       2 / 2    success 
-281d4393-05c8-44bf-b5de-231cea0fc022 identify/287fc78a4cdf42d89142d46fb5f689d9 13 minutes ago     53 seconds 0       2 / 2    success 
-3425a7a0-543e-4e2a-a244-a3982c527248 model/1b9c158e33394056a18041a4a86cb54a    21 minutes ago     5 minutes  1       1 / 1    success 
+6aa6c995-58ce-445d-999a-eb0e0690b041 tag/7cbd2584d4f0472abbca0d9e015b9829      5 seconds ago      1 seconds  0       2 / 2    success
+8a7961b7-1085-404a-b0ee-66034fae7212 identify/1bc94ec558e44e0cb45ed5ab7d9f9674 59 seconds ago     54 seconds 0       2 / 2    success
+56e24ac0-0430-4fa4-aa8b-08de5c1884db model/002f16b63a4345a4bc6bdf5510c9faac    About a minute ago 19 seconds 0       1 / 1    success
+cd284a28-6c97-4236-9f6d-717346c60f24 tag/ae747e8032704b6cae6ae7bba064c3c3      8 minutes ago      11 seconds 0       2 / 2    success
+281d4393-05c8-44bf-b5de-231cea0fc022 identify/287fc78a4cdf42d89142d46fb5f689d9 13 minutes ago     53 seconds 0       2 / 2    success
+3425a7a0-543e-4e2a-a244-a3982c527248 model/1b9c158e33394056a18041a4a86cb54a    21 minutes ago     5 minutes  1       1 / 1    success
 ➔ pachctl list-file tag master
 NAME                TYPE                SIZE                
 tagged_image1.jpg   file                557 KiB             
 tagged_image2.jpg   file                36.03 KiB
 ```
 
-Now if we look at our images, we find that everything has been updated without any annoying manual work on our end:
+Now if we look at our images, we find that everything has been updated without any annoying manual work on our hands:
 
 ![alt text](https://raw.githubusercontent.com/dwhitena/pach-machine-box/master/tagged_images2.jpg)
 
