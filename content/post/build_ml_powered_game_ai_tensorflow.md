@@ -6,7 +6,7 @@ math = false
 draft = false
 
 +++
-*Based on a lightning talk given at GopherCon 2017 "Building an ML-Powered Game AI using TensorFlow in Go" [Video](https://www.youtube.com/watch?v=oiorteQg9n0&t=53s) / [Slides](https://github.com/gophercon/2017-talks/tree/master/lightningtalks/PeteGarcin-BuildingMLPoweredGameAIwithTensorFlow)*
+*Based on a lightning talk given at GopherCon 2017 "Building an ML-Powered Game AI using TensorFlow in Go" [Video](https://www.youtube.com/watch?v=oiorteQg9n0) / [Slides](https://github.com/gophercon/2017-talks/tree/master/lightningtalks/PeteGarcin-BuildingMLPoweredGameAIwithTensorFlow)*
 
 (Author: Pete Garcin, Developer Advocate @ [ActiveState](https://activestate.com), @rawktron on [Twitter](https://twitter.com/rawktron) and @peteg on Gophers Slack)  
 
