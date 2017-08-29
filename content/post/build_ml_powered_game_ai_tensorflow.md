@@ -104,4 +104,6 @@ The Machine Learning and Data Science ecosystem in Go is growing, and there are 
 
 In the near future, I plan to push this to GitHub as I had a number of requests at both GopherCon and PyCon to do so and would love to see others learn from this project as well as help to develop and expand its capabilities. 
 
+*Update 08/29/17 - Full Source Code is now live on [GitHub](https://github.com/ActiveState/neuroblast)!*
+
 If you want to ask questions about this project, feel free to hit me up on Twitter [@rawktron](https://twitter.com/rawktron).
