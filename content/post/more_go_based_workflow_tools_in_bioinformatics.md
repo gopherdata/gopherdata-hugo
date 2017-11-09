@@ -14,9 +14,9 @@ caption = ""
 
 It is an exciting time for Go as a data science language and for the
 [\#gopherdata](http://gopherdata.io/) movement. The 
-[ecosystem of tools](https://github.com/gopherdata/resources/tree/master/tooling)
-is constantly improving, with both general purpose tools (e.g., for dataframes and
-statistical analyses) and more specialised ones (e.g., for neural networks and
+[ecosystem of tools](https://github.com/gopherdata/resources/blob/master/tooling/README.md)
+is constantly improving, with both general purpose tools (e.g., for data frames and
+statistical analyses) and more specialized ones (e.g., for neural networks and
 graph-based algorithms) popping up every day.
 
 Recent weeks have been particularly exciting for those involved in the
@@ -55,7 +55,7 @@ systems designed to help coordinate computations when the number of computation
 steps is very large and/or the steps have complex dependencies between their
 input and output data. This is common in many scientific fields, but it is
 common in bioinformatics in particular, because of the vast plethora of tools
-built to analyse the extremely heterogenous data types describing biological
+built to analyze the extremely heterogeneous data types describing biological
 organisms, from molecules to cells to organs to full body physiology.
 
 Common tasks in bioinformatics necessitating the use of workflow tools include
@@ -82,7 +82,7 @@ time. Individual pipeline stages are defined by docker images and can be
 individually parallelized across large data sets (by leveraging
 [Kubernetes](https://kubernetes.io/) under the hood).
 
-**[SciPipe](http://scipipe.org/)** - This tool is a much smaller than something
+**[SciPipe](http://scipipe.org/)** - This tool is much smaller than something
 like Pachyderm and is focused on highly dynamic workflow constructs in
 which on-line scheduling is key. SciPipe also focuses, thus far, on workflows
 that run on HPC clusters and local computers.  Although, it can be integrated
@@ -114,17 +114,17 @@ support other cloud providers, like GCP, in the near future though, but
 this effort seems to require writing custom runner code per target
 environment/cloud.
 
-use of Kubernetes also allows Pachyderm to matically bring certain
-orchestration functionality into a nformatics context that has otherwise
+The use of Kubernetes also allows Pachyderm to automatically bring certain
+orchestration functionality into a context that has otherwise
 propelled Kubernetes to become industry leader in orchestration. More
-specifically, Pachyderm lines are automatically “self-healing” in that they are
+specifically, Pachyderm pipelines are automatically “self-healing” in that they are
 rescheduled and restarted when cluster nodes or jobs fail, and Pachyderm is
 able to optimally schedule work across high-value nodes (e.g., high-CPU or GPU
-nodes) using methods such as auto-scaling.  Reflow appears to use it’s own
+nodes) using methods such as auto-scaling. Reflow appears to use it’s own
 logic to match workloads with available instance types.
 
 Finally, Pachyderm and Reflow have differences in the way workflows are
-actually defined.  Pachyderm leverages the established JSON/YAML format that is
+actually defined. Pachyderm leverages the established JSON/YAML format that is
 common in the Kubernetes community, and Reflow implements what seems to be its
 own readable, Go-inspired domain specific language (DSL).
 
@@ -145,8 +145,8 @@ appears to use a Reflow-specific cache based on S3 and DynamoDB. In
 contrast, Pachyderm utilizes etcd, a distributed key-value store, for metadata.
 
 Lastly with regard to data sharding and parallelization, Pachyderm seems to go
-further than Reflow. While Reflow does parallelise tools running on separate
-data sets, Pachyderm also provides automatic parallelisation of tools accessing
+further than Reflow. While Reflow does parallelize tools running on separate
+data sets, Pachyderm also provides automatic parallelization of tools accessing
 “datums” that may correspond to the same data set or even the same
 file. Pachyderm automatically distributes the processing of these datums to
 containers running in parallel (pods in Kubernetes) and gathers all of the
@@ -158,7 +158,7 @@ explicitly implement parallelism and data sharding in code.
 With these notes in mind, we think Reflow and Pachyderm are addressing slightly
 different user needs. While Reflow seems to be an excellent choice for a quick
 setup on AWS or a local docker-based server, we think Pachyderm will generally
-provide more vendor agnosticity, better parallelisation, and valuable
+provide more vendor agnosticity, better parallelization, and valuable
 optimizations and updates that come out of the growing
 Kubernetes community. Finally, we think that Pachyderm provides a stronger
 foundation for rigorous and manageable data science with its unified data
@@ -178,8 +178,8 @@ complexity of the tools, workflow implementation, and deployment/integration:
 
 ### Complexity
 
-SciPipe is also a much smaller tool in many ways. For example, a very simple
-count of LOC for the three frameworks shows that SciPipe is implemented with
+SciPipe is a much smaller tool in many ways. For example, a very simple
+count of LOC for the different frameworks shows that SciPipe is implemented with
 more than an order of magnitude less lines of code than the other tools:
 
 ```bash
@@ -211,16 +211,16 @@ $ find | grep "\.go" | grep -vP “(vendor|examples|_test)” | xargs cat | grep
 Further, SciPipe was designed to primarily support highly dynamic workflow
 constructs, where dynamic/on-line scheduling is needed. These workflows include
 scenarios in which you are continuously chunking up and computing a dataset of
-unknown size or parametrising parts of the workflow with parameter values
+unknown size or parametrizing parts of the workflow with parameter values
 extracted in an earlier part of the workflow. An example of the former would
 be lazily processing data extracted from a database without saving the
 temporary output to disk. An example of the latter would be doing a parameter
-optimisation to select, e.g., good gamma and cost values for libSVM before
+optimization to select, e.g., good gamma and cost values for libSVM before
 actually training the model with the obtained parameters.
 
 Also, where Pachyderm and Reflow provide manifest formats or DSLs for writing
-workflows, SciPipe lets you write workflows directly in Go. SciPipe is,
-thus, consumed as a programming-library rather than a framework.
+workflows, SciPipe lets you write workflows directly in Go. SciPipe is
+thus consumed as a programming-library rather than a framework.
 This feature might scare off some users intimidated by Go’s relative
 verboseness compared to specialized DSLs, but it also allows users to leverage
 extremely powerful existing tooling and editor support for Go.
@@ -232,7 +232,7 @@ that SciPipe workflows can be compiled to small static binaries. This
 compilation makes it very easy to package up smaller SciPipe workflows in
 individual containers and integrate them into tools like Pachyderm or Reflow or
 other services. We thus imagine that SciPipe could be a complement to Pachyderm
-or Reflow when highly dynamic workflow constructs are needed, which constructs
+or Reflow when highly dynamic workflow constructs are needed, which
 may be a challenge to implement in the manifests and DSLs of Pachyderm or
 Reflow.
 
